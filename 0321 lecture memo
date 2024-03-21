@@ -1,0 +1,126 @@
+# 오전
+
+외부강사 초청
+최윤성 강사 / jws202025@gmail.com
+게임회사 근무 // 2022 분석용 이벤트로그 설계, 데이터 인프라 도입 및 설계, 유저 구매 예측 모델링, 
+2023 Data Team Lead담당, 클라우드 데이터 플랫폼 구축, 데이터 ETL 파이프라인 개발
+
+강의내용
+1. 텍스트 데이터 수집(강의자료 : Part01_Youtube 댓글 데이터 수집 : https://colab.research.google.com/drive/1KSP1hZZ--WWWqYxVdXl6nYPIGNzw_0bf#scrollTo=Nnqk-GeNUuIq)
+YouTube API 기반 자료수집
+  1) 구글 클라우드 플랫폼에서 유튜브 API 서비스 사용
+  2) API 키 발급 및 API 활용
+  - Colab 설치 및 라이브러리 import
+    - !pip install google-api-python-client
+    - from googleapiclient.discovery import build
+      from googleapiclient.errors import HttpError
+      from oauth2client.tools import argparser
+  3) 채널 재생목록 리스트 검색결과 수집 및 데이터 프레임 저장 : search_response // JSON 결과 출력
+  4) 채널 재생목록 동영상 리스트 수집 및 데이터 프레임 저장
+  5) 채널 재생목록 동영상 리스트 정보 세분화(영상 크기, 상태, 조회수, 댓글 등) 및 데이터 프레임 저장 // 소비더머니_영상데이터.csv
+  6) 동영상 댓글 수십 및 데이터 프레임 저장 // 소비더머니_스타벅스문화_댓글.csv
+
+2. 텍스트 데이터 전처리 // 정규표현식, 형태소 분석기(강의자료 : Part02_데이터 전처리 & 시각화 : https://colab.research.google.com/drive/1T06vnNisp799p-8ynTSRlzN3Ifu3QJAc)
+  데이터 전처리 : 파이썬 re 모델 활용
+  1) 기본문법 설명
+  2) re 모듈 주요 메서드 설명
+  3) 정규표현식을 활용한 리뷰 데이터 전처리
+  형태소 분석기 설명
+  1) 형태소 분석기 : 주어진 문장이나 문서를 형태소라 불리는 최소의미 분할, 형태소 품사 태깅하는 작업
+  KoNLPy 설명 : 한국어 자연어 처리 파이썬 라이브러리
+  - KKma(꼬꼬마) 문장 분석, 구 형태 분석, 형태서 분석, 품사태깅
+  - KKma를 활용한 스타벅스 관련 단어 빈도 분석 및 분류 후 데이터 프레임, plot 화
+
+3. 데이터 시각화(강의자료 : Part02_데이터 전처리 & 시각화 : https://colab.research.google.com/drive/1T06vnNisp799p-8ynTSRlzN3Ifu3QJAc)
+  워드클라우드 : 단어들을 시각적으로 나타내는 방법 중 하나
+  - 소비더머니_스타벅스문화_댓글.csv을 활용한 워드클라우드 작성 실습
+  시각화 BI활용 대시보드 시각화 소개
+  - Looker Studio
+  - 예시) 소비더 머니 KPI 대시보드 : https://lookerstudio.google.com/reporting/d2ec5518-73e3-4700-905f-851087e6d281/page/xJStD
+
+4. 데이터 직군 소개
+- 데이터 구축 작업에서 ML(머신러닝)의 비중은 적음
+
+- 데이터 구축 작업은 크게 4단계로
+1) 외부 데이터 도입(평가, 피드백) 2) 데이터 팀의 자료 가공 3) 비즈니스 인사이트 도출 4) 제품의 개선 및 향상 으로
+1)~4)의 작업을 반복함
+
+- 데이터 팀 직군 : 1) 데이터 엔지니어 ***2) 데이터 분석가 3) 데이터 사이언티스트
+1) 데이터 엔지니어 : 산발적 데이터 정제하여 사내 공급하는 역할, 데이터 파이프라인 관리, 데이터 웨어하우스 관리, 사내 데이터 툴 개발
+  -필수 역량 : 파이선/스파크/자바/스칼라, SQL/Hive, 클라우드 플랫폼, CS, 백엔드 지식
+2) 데이터 분석가 : BI(Business Intelligence) 담당(제품분석, 비즈니스 분석, 마케팅 분석 등), SQL을 활용한 분석 많음
+  -필수 역량 : SQL/파이선/스파크, 통계/수학 지식, 시각화 도구 사용, 도메인 지식, 약간의 엔지니어링 지식
+3) 데이터 사이언 티스트 : ML, 서비스 개선, Business impact에 시간이 걸림
+  -필수 역량 : ML, DL 지식, 통계/수학 지식, Pyhon/Spark, SQL/Hive
+
+- 회사에서 필요한 역량 : 
+1) 파이선/SQL/ML은 기본
+2) 문제정의 능력이 중요
+  - 테크블로그 참고 ex) 쏘카
+
+# 오후
+
+류영표 강사
+동국대 수학과/응용수학 수료
+
+1. 데이터 분석을 위한 기초수학
+  1) 선형대수학
+    - 기계공학, 통계학, 수학, 전자공학 등 다양한 학문의 기초과목
+    - 1차 방정식을 의미, 변수들의 곱이나, 제곱근, 삼각함수, 2차 함수등은 비포함
+  2) 벡터
+    - 스칼라 : 크기만 주어지는 양(길이, 넓이, 질량, 온도)
+    - 벡터 : 크기 외 방향까지 지정되는 양(절대값)
+    - numpy, list의 차이 : list 하나의 객체 // numpy는 객체의 집합
+  3) 행렬의 연산
+    - 행렬의 곱셈 : A(m*k) x B(k*n) = AB(m*n)
+    - 내적 : A(n*1)  B(n*1)일 경우 A.B inner product 하여 A의 행과 열을 변경 (1*n)
+
+2. 텍스트 마이닝 개론
+  1) 텍스트 마이닝이란
+  - 텍스트에서 의미 있는 정보를 얻는 작업 // 빅데이터 - 대용량 텍스트 데이터 저장, 자연어 처리(NLP : Natural Language Processing) - 텍스트 데이터 구조 분석 및 정보 통계처리 가능한 형태 변환 로 구성
+
+3. 텍스트 전처리
+  1) 텍스트 전처리란?
+  - 데이터를 정제/가공하여 텍스트의 의미를 컴퓨터가 이해할 수 있게 변환
+  - 코퍼스(Corpus) // 자연어 : 자연언어 연구를 위해 특정한 목적을 가지고 언어의 표본을 추출한 집합
+  - 토큰화 : 텍스트를 원하는 단위로 분절하는 작업(중복 최소화, 용량 최소화가 바람직)
+  - 벡터화 : 비정형 데이터인 텍스트를 정형화하는 작업(숫자로)
+  2) 토큰화
+  - 문장 토큰화(Sentence Tokenization) : 문장의 마침표(.) 개행문자(\n) 느낌표(!) 물음표(?) // 구두점 // 등 문장의 마지막을 뜻하는ㄴ 기호에 따라 분리
+  - 단어 토큰화(Word Tokenization) : 띄어쓰기 기준, 구두점과 같은 문자는 제외시키는 간단한 토큰화 작업
+  - 형태소 : 의미를 가진 가장 작은 단위, 자립형태소와 의존형태소로 나뉨
+  - 한글의 단어 토큰화는 형태소 분석임 
+  3) 불용어/노이즈 제거
+  - 의미는 있으나 필요치 않은 불용어/노이즈를 삭제하는 작업
+
+4. 텍스트_분석(https://colab.research.google.com/drive/1wWpYC2WlwcjvPorheaPuE6L0cRdsnj48)
+  1) 파이썬 기반 NLP 패키지
+  - NLTK(National Language Tookit for python) : 파이썬의 가장 대표적인 NLP 패키지. 방대한 데이터 세트와 서브 모듈을 가지고 있으며 NLP의 거의 모든 영역을 커버하고 있음. 수행속도가 느려 활용도 낮음.
+  - SpaCy : 뛰어난 수행 성능으로 최근 가장 주목을 받는 NLP 패키지.
+  2) 자연어 처리
+  - 영어나 한국어와 같은 자연어를 컴퓨터가 이해할 수 있는 자료(수치)로 변환하는 과정
+
+5. 텍스트 전처리 실습
+  1) SpaCy - 토큰화에 필요한 라이브러리 및 설치 파일  
+  - !pip install spacy
+  - !pip show spacy
+  - !python -m spacy download en_core_web_sm
+  - import spacy
+  - for token in spacy_en.tokenizer(text):
+  2) NLTK
+  - !pip install nltk
+  - !pip show nltk
+  - import nltk
+  - nltk.download('popular') or ('all) : 토큰화에 필요한 데이터, 속도로 인해 popular를 자주 씀
+  - from nltk.tokenize import sent_tokenize : 코퍼스 내 문장 단위로 끊는 토큰화 방법
+  - nltk.download('punkt')
+    from nltk.tokenize import word_tokenize : Word Tokenize 하기 위해서는 nltk.download('punkt)가 필요. 어포스트로피 처리에 취약
+  - from nltk.tokenize import WordPunctTokenizer : 데이터 셋의 ' 어포스트로피를 따로 추출하여 토큰화
+  - from tensorflow.keras.preprocessing.text import text_to_word_sequence : 모든 알파벳 소문자화, 구두점 삭제, 어포스트로피 붙여서 보존
+  - from nltk.tokenize import WordPunctTokenizer : 어포스트로피 따로 보존
+  - from nltk.tokenize import TreebankWordTokenizer : '-' 붙여서 보존, 어포스트로피 붙여서 보존
+
+6. 토큰화 고려 사항
+  1) 구두점이나, 특수문자를 단순 제외해서는 안됨. # 왜?
+  2) 줄임말과 단어 내에 띄어쓰기가 있는 경우
+
