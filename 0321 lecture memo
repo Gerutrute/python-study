@@ -114,10 +114,9 @@ YouTube API 기반 자료수집
   - nltk.download('popular') or ('all) : 토큰화에 필요한 데이터, 속도로 인해 popular를 자주 씀
   - from nltk.tokenize import sent_tokenize : 코퍼스 내 문장 단위로 끊는 토큰화 방법
   - nltk.download('punkt')
-    from nltk.tokenize import word_tokenize : Word Tokenize 하기 위해서는 nltk.download('punkt)가 필요. 어포스트로피 처리에 취약
+    from nltk.tokenize import word_tokenize : Word Tokenize 하기 위해서는 nltk.download('punkt')가 필요. 어포스트로피 처리에 취약
   - from nltk.tokenize import WordPunctTokenizer : 데이터 셋의 ' 어포스트로피를 따로 추출하여 토큰화
   - from tensorflow.keras.preprocessing.text import text_to_word_sequence : 모든 알파벳 소문자화, 구두점 삭제, 어포스트로피 붙여서 보존
-  - from nltk.tokenize import WordPunctTokenizer : 어포스트로피 따로 보존
   - from nltk.tokenize import TreebankWordTokenizer : '-' 붙여서 보존, 어포스트로피 붙여서 보존
 
 6. 토큰화 고려 사항
