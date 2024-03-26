@@ -1,0 +1,169 @@
+# 오전
+
+텍스트 분석
+한국어 말뭉치
+- KoNLPy에서는 대한민국 헌법 말뭉치인 kolaw와 국회법안 말뭉치인 kobill을 제공
+
+KoNLpy 말뭉치 import 명령어
+
+!pip install konlpy
+!pip install install curl git
+!bash <(curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh)
+
+from konlpy.tag import * # * library에 있는 패키지를 모두 불러오는 명령어
+
+hannanum = Hannanum()
+kkma = Kkma()
+okt = Okt()
+komoran = Komoran()
+mecab = Mecab()
+
+형태소 추출
+- 명사 뿐 아니라 모든 품사의 형태소를 알아내려면 morphs라는 명령 사용
+
+품사 부착
+- pos 명령을 사용하면 품사 부착
+- 부착되는 품사 태그의 기호와 의미는 tagset 속성으로 확인할 수 있다.
+
+PyKoSpacing
+- 한국어 띄어쓰기 패키지로 띄어쓰기가 되어있지 않은 문장을 띄어쓰기를 한 문장으로 변환해주는 패키지
+!pip install git+https://github.com/haven-jeon/PyKoSpacing.git
+
+Py-Hanspell
+- 네이버 한글 맞춤법 검사기를 바탕으로 만들어진 패키지
+!pip install git+https://github.com/ssut/py-hanspell.git
+
+SOYNLP를 이용한 단어 토큰화
+- soynlp는 품사 태깅, 단어 토큰화 등을 지원하는 단어 토크나이저
+- 비지도 학습으로 단어 토큰화를 한다는 특징
+- 데이터에 자주 등장하는 단어들을 단어로 분석, 신조어 분석이 가능
+
+신조어 분석
+라이브러리 명령어
+
+import urllib.request
+from soynlp import DoublespaceLineCorpus
+from soynlp.word import WordExtractor
+
+언어 모델(Language Model)
+- 단어 시퀀스(문장)에 확률을 할당하는 모델
+- pos tagging을 transformer로 사용해도 됨
+
+Ngram
+주어진 이전 단어들로부터 통계기반으로 다음 단어 예측하기(조건부확률 추정)
+ConditionalFreqDist : 조건부확률
+
+from nltk import ConditionalFreqDist
+from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
+
+import numpy as np
+import nltk
+
+#queue 구조 : 뒤에서 꺼내는 것
+#stack 구조 : 앞에서 꺼내는 것
+
+바이그램예제
+-------------------------------------
+import nltk
+nltk.download('movie_reviews')
+nltk.download('punkt')
+from nltk.corpus import movie_reviews
+
+sentence = []
+for tokens in movie_reviews.sents():
+  bigram = ngrams(tokens, 2, pad_left=True, pad_right=True, left_pad_symbol='<s>', right_pad_symbol='</s>')
+  sentences += [t for t in bigram]
+
+cfd = ConditionalFreqDist([(t[0], t[1]) for t in bigram])
+sentences[:20]
+-------------------------------------
+
+동적 자료 표시함수 : plotly
+예시 ) https://www.kaggle.com/code/ashaabrizvi/covid-19-plotly-tutorial
+
+MLE(Maximum Likelihood Estimation) : 
+예시 ) https://process-mining.tistory.com/93
+
+# 오후
+Naver Sentiment Moive corpus 사용
+------------------------------
+!pip install nltk
+
+%%time
+!wget -nc -q https://raw.githubusercontent.com/e9t/nsmc/master/ratings_train.txt #linux 언어 가져올수 있게함
+
+# -*-coding : utf-8 -*-
+import codecs
+# UTF-8 : '유니코드를 위한 가변 길이(들어오기 전에 비워놓는 길이.) 문자 인코딩 방식 중 하나.
+#codecs : UTF-8+ 한글처리에 용이.
+#codecs : 반드시 문자열은 유니코드로 처리 ->어떤 문자열 셋으로 변환된 문자들로 codecs를 통해 열게 된 파일에 쓰는게 안됨
+# with codecs.open("ratings_train.txt", encoding='CP949') as f:
+with codecs.open("ratings_train.txt", encoding='UTF-8') as f:
+    data = [line.split('\t') for line in f.read().splitlines()] #line.split('\t') :tab키로 분할해주세요.
+    #f.read().splitlines() :읽었는데, line별로 split로 해준것을 변수로 받아들음.
+    data = data[1:]   # header 제외
+
+docs = [row[1] for row in data]
+len(docs)
+
+!pip install konlpy
+
+import warnings # 에러무시
+#에러는 아닌데, warning을 무시하겟습니다.
+from nltk import ConditionalFreqDist
+from nltk.util import ngrams
+
+from konlpy.tag import Okt
+
+tagger = Okt()
+
+def tokenize(doc):
+    tokens = ['/'.join(t) for t in tagger.pos(doc)] #Okt의 품사태킹
+    return tokens
+
+tokenize("그 영화는 아주 재미있었어요.")
+------------------------------
+from tqdm import tqdm
+sentence = []
+for d in tqdm(docs):
+  tokens = tokenize(d)
+  bigram = ngrams(tokens, 2, pad_left = True, pad_right = True, left_pad_symbol = 'SS', right_pad_symbol = 'SE')
+  sentence += [t for t in bigram]
+------------------------------
+
+언어모델 평가
+Perplexity
+분기 계수(Braching Factor)
+
+단어의 표현 방법
+- 크게 국소 표현(Local Representation) 방법(또는 이산 표현)과 분산 표현(Distributed Representation) 방법(또는 연속 표현)으로 나뉜다.
+
+BOW(bag of words)
+- 단어들의 순서는 전혀 고려하지 않고, 단어들의 출현 빈도(frequency)에만 집중하는 텍스트 데이터의 수치화 표현 방법
+토큰 순서 word(or word)-> tokenize -> one-hit encoding -> BOW -> modeling -> bigram
+
+코드 예시
+from konlpy.tag import Okt
+import re
+
+okt = Okt()
+
+token = re.sub("(\.)", "", "정부가 발표하는 물가상승률과 소비자가 느끼는 물가상승률은 다르다.")
+
+token = okt.morphs(token)
+
+word2index = {}
+bow = []
+
+for voca in token:
+  if voca not in word2index.keys()
+    word2index[voca]=len(word2index)
+    bow.insert(len(word2index)-1, 1)
+
+  else :
+    index-word2index.get(voca)
+    bow[index] = box[index] +1
+
+print(word2index)
+
