@@ -167,3 +167,11 @@ for voca in token:
 
 print(word2index)
 
+데이터 학습 시 주의사항
+train / test
+모의고사 / 수능
+- 모의고사 점수는 높고 수능 점수는 낮은 것 -> overfitting 반대는 underfitting
+- 보통 train 8 대 test 2의 비율로 진행
+
+countervectorizer
+예시 ) https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html
