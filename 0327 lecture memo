@@ -1,0 +1,54 @@
+# 오전
+
+def Tokenize(word : str) -> list: # Tokenize 안에서 word 원소를 str로 변환 후 list 변환
+  temp = okt.morphs(word) # 형태소 단위 분리
+  return [ k for k in temp if k not in stopword_lists] # stopword 리스트 안에 없는 단어의 형태소 단위 분리를 for 해주고 
+
+def make_BOW(document: list) -> dict:
+
+  words = set(document)
+  BOW = dict()
+  for word in words:
+    if word not in BOW:
+      BOW[word] = len(BOW)
+  return BOW
+
+def make_cntvec(document : list, BOW : dict) -> list:
+
+  count_vector = [0] * len(BOW)
+
+  for idx, word in enumerate(BOW.keys()):
+    count_vector[idx] = document.count(word)
+  return count_vector
+
+CountVectorizer 클래스로 BOW 만들기
+- 단어의 빈도를 Count하여 Vector로 만드는 CountVectorizer 클래스를 지원
+- 주의점 : 띄어쓰기만을 기준으로 단어를 자르는 낮은 수준의 토큰화를 진행하고 BoW를 만든다는 점
+- 주의점 : 한글자는 무시됨
+
+불용어를 제거한 Bow 만들기
+예시 ) 사용자가 직접 정의한 불용어
+from sklearn.feature_extraction.text import CountVectorizer
+
+text= ''
+vect = CountVectorizer(stop_words='')
+print(vect.fit_transform(text).toarray())
+print(vect.vocabulary_)
+
+문서 단어 행렬(Document-Term Matrix, DTM)
+- 다수의 문서에서 등장하는 각 단어들의 빈도를 행렬로 표현한 것을 말합니다. 쉽게 생각하면 각 문서에 대한 BoW를 하나의 행렬로 만든 것
+- 문제점 : 희소문제 존재, 카운트 값이 높을수록 중요한 단어 인식 
+
+Token
+- analzer, tokenizer, token_pattern 등의 인수로 사용할 토큰 생성기 선택
+
+COO 형식
+- 0이 아닌 데이터만 별도의 배열에 저장하고, 그 데이터가 가리키는 행과 열의 위치를 별도의 배열에 저장하는 방식
+
+CSR matrix
+
+dok
+- dok는 좌표가 key이고 원소 값이 value인 딕셔너리 구조
+
+TF-IDF(Term Frequency-Inverse Document Frequency)
+- 개별 문서에서 자주 나타나는 단어에 높은 가중치를 주되, 모든 문서에서 전반적으로 자주 나타나는 단어에 대해서는 패널티를 주는 방식으로 값을 부여
