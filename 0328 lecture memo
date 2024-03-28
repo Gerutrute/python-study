@@ -1,0 +1,106 @@
+# 오전
+Riss를 활용한 텍스트 분석
+https://colab.research.google.com/drive/11tY_wZhtjOmsEiSPPNkRiHaJ6uj5zULH#scrollTo=36kDlXdvMHN-&uniqifier=1
+riss 크롤링
+대상 사이트
+https://www.riss.kr/index.do
+https://arxiv.org/
+https://scholar.google.com/
+
+'lxml' 한 번에 모든 것을 불러옴
+'html.parser' html에 있는 구성요소를 각각 불러옴
+
+df.info df 요약통계량+자료형 표시
+df.describe count, unique, top, freq, mean, min, max 정보표시
+df.isna 빈값 데이터 확인
+
+df['title'].value_counts() 각 정보별 갯수 확인
+
+결측치 채우는 함수 // string이 하나라도 있으면 작동안됨
+df['age'] = df['age'].fillna(df['age'].mean)
+
+df.year.astype('int32') # astype() 데이터 형 변환
+
+# https://pandas.pydata.org/docs/reference/api/pandas.Series.str.contains.html
+# 제목에 "초등"이란 키워드가 들어있는 논문만 가져오기 df[df['칼럼이름'].str.contains('포함단어')]
+df[df.title.str.contains('초등')]
+Series.str.contains(pat, case=True, flags=0, na=None, regex=True)[source]
+
+태그
+find
+find_all
+
+데이터 시각화
+# 한글 지원 라이브러리 설치 // 한글 폰트 다운로드 필요없어짐
+!pip install koreanize-matplotlib
+import koreanize_matplotlib
+
+# 연도별 발행논문 수
+df.year.value_counts()
+
+# 연도별 논문편수 시각화
+df[df.year>=2020].plot(kind='hist')
+
+# https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html
+df[df.year>=2020].plot(kind='hist', legend='', ylabel='', color='orange', title='연도별 논문수', bins=3)
+plt.show() # kind 표 종류, legend, ylabel, color 도형 색, 데이터 종류, bins 막대 그래프 갯 수
+
+# 학회 빈도 확인
+df.publisher.value_counts()
+
+# 수평 막대그래프 그리기
+plt.figure(figsize=(20, 8))
+freq = df.publisher.value_counts().head(20) #.head() 기본 5개 이상만 출력 반대는 .tail()
+freq.plot(kind='barh') # barh(horizontal) 막대그래프를 옆으로 눞힘 # pie 파이차트
+plt.show()
+
+정규표현식으로 텍스트 전처리하기
+
+# 한글 초록만 따로 저장하기
+ko_초록 = df.abstracts.str.replace('[^가-힣]+', ' ', regex=True) # 가-힣까지 문자열이 있으면 남겨주고, 없으면 없앤다.
+ko_초록[10:40]
+
+# 영어 초록만 따로 저장하기
+eng_초록 = df.abstracts.str.replace('[^a-zA-Z]+', ' ', regex=True)
+eng_초록[10:40]
+
+# 한글 초록 저장
+ko_초록.to_csv('한국어초록.csv', index=False)
+
+한글 나눔글꼴 설치
+# colab에서 사용
+!sudo apt-get install -y fonts-nanum
+!sudo fc-cache -fv
+!rm ~/.cache/matplotlib -rf
+
+한글 형태소 분석과 워드클라우드
+명사만 추출하기
+from konlpy.tag import Okt
+okt=Okt()
+okt.nouns(text[0])
+
+키위형태소
+- 빠르고, 해석능력도 좋으며 모호성 분류도 잘함
+!pip install --upgrade pip
+!pip install kiwipiepy
+
+# 오후
+머신러닝 개론
+Regression
+https://colab.research.google.com/drive/1Gvj6EgqNos7B3INM3DXXJXYklMn1lwZz
+
+Gradient Decent
+------------------
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+np.random.seed(0)
+# y = 4X + 6 식을 근사(w1=4, w0=6). random 값은 Noise를 위해 만듬
+X = 2 * np.random.rand(100,1)
+y = 6 + 4 * X + np.random.randn(100,1) 
+
+# X, y 데이터 셋 scatter plot으로 시각화
+plt.scatter(X, y)
+------------------
+
