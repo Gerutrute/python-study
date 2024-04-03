@@ -1,0 +1,85 @@
+Decision Tree(결정트리)
+-구성 원소가 가장 섞이지 않은 상태로 분류하는 것
+-복잡성//불확실성(Entropy)이 낮도록 만드는 것
+
+Impurity(불순도)
+-노드 안에 섞인 정도를 의미
+
+Random Forest
+-여러 개의 결정트리를 만들어 훈련시키는 것
+-앙상블 방식을 사용하여 오차가 무시하는 특성으로 결정트리 하나를 사용모델보다는 성능이 좋음
+-머신러닝 알고리즘 중에서 강력한 편
+장점:
+-성능이 좋고 정확도 높음
+-간편하고 빠름
+-큰 데이터 셋 적용 가능, 많은 입력변수 취급가능
+단점:
+-속도와 메모리 비용이 상대적으로 큼(트리가 클 수록)
+-트리 깊이와 개수 설정 잘못으로 과적합 발생
+
+
+배깅
+- 훈련세트에서 중복을 허용하는 것 <=> pasting
+
+유방암 데이터로 살펴보는 Decision Tree
+from sklearn.tree import DecisionTreeClassifier # 결정트리 분류모델 로드
+from sklearn.datasets import load_breast_cancer # 유방암 데이터 로드
+from sklearn.model_selection import train_test_split # 훈련세트 로드
+from sklearn import tree 트리 모델 로드
+
+cancer = load_breast_cancer() # 유방암 데이터 로드
+
+X_train, X_test, y_train, y_test = train_test_split(
+  cancer.data, cancer.target, stratify=cancer.target, random_state=42)
+clf = DecisionTreeClassifier(random_state=0) # 왜 state를 0으로 했나?
+clf.fit(X_train, y_train) #훈련 데이터 삽입
+
+tree = DecisionTreeClassifier(max_depth=10, random_dtate=0)
+tree.fit(X_train, y_train)
+y_pred = tree.preddict(X_test)
+
+결정 트리 분석
+from sklearn.tree import export_graphviz
+export_graphviz(tree, out_file="tree.dot', class_names=["malignant", "benign"],
+  feature_names=cancer.feature_names, impurity=True, filled=True)
+
+import graphviz
+
+with open("tree.dot" as f:
+  dot_graph = f.read
+display(graphviz.Source(dot_graph))
+
+Feature importance in trees
+- tree.feature_importances_
+
+Feature 횡 그래프
+def plt_feature_importances_cancer(model):
+  n_features = cancer.data.shape[1]
+  plt.barh(np.arange(n_features), model.feature_importances_, align='center')
+  plt.yticks(np.arange(n_features), cancer.feature_names)
+  plt.xlabel("Feature importance")
+  plt.ylabel("Feature")
+  plt.ylim(-1, n_features)
+
+plot_feature_importances_cancer(tree)
+
+model 적용
+from sklean.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(cancer.data, cancer.target)
+
+from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+score = model.score(X_test, y_test)
+score
+
+피마 인디언 당뇨병 예측
+-주어진 데이터를 바탕으로 당뇨병 관련 여부 판단
+-피마 지역은 인디언 전통이 유지되다가 서구화되면서 당뇨병 환자 발생
+
+
+
+
+
