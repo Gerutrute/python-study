@@ -1,0 +1,223 @@
+Permutatuion Feature importance
+-장점: 재학습시킬 필요가 없다
+-섞었을 때 예측값이 실제 값보다 얼마나 차이가 더 생겼는지를 통해 해당 feature의 영향력을 파악
+-각 feature의 중요도 안에는 다른 feature들과의 교호작용(한 요인의 효과가 다른 요인의 수준에 의존하는 경우)도 포함됩니다.
+-값을 무작위로 섞는 것이 특징이기에, 할 때마다 결과가 매우 달라질 수 있습니다.
+
+1. Permutation Importance using ELI5 library
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+
+df=pd.read_csv('경로')
+
+X = df.iloc[:,:-1]
+y = df.iloc[:,-1]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+
+//
+
+my_model = RandomForestClassifier(n_estimatores=100, random_state=0).fit(X_train, y_train)
+
+//
+
+!pip install eli5
+
+//
+
+import eli5
+from eli5.sklearn import PermutationImportance
+
+perm = PermutationImportance(my_model, random_state=1).fit(X_test, y_test)
+eli5.show_weights(perm, feature_names = X.columns.tolist())
+
+2. Partial Dependence Plots
+-예측모델을 만들었을 때, 어떤 특성(feature)이 예측모델의 타겟변수(target variable)에 어떤 영향을 미쳤는지 알기 위한 그래프
+-Tree기반모델은 입출력의 관계를 알 수 없기에 PDP를 통해 이를 확인함
+-이 모델의 가장 큰 장점은 종속 변수와 관심 있는 독립 변수의 관계가 선형인지, 단조적인지, 복잡한지(고차) 다양한 형태의 관계를 볼 수 있음
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+df = pd.read_csv('경로')
+
+X=df.iloc[:,:-1]
+y=df.iloc[:,-1]
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.25,random_state=0)
+
+//
+from sklearn.tree import DecisionTreeClassifier
+
+feature_names = [i for i in df.columns]
+tree_model = DecisionTreeClassifier(random_state=0).fit(X_train, y_train)
+
+//
+!pip install pdpbox==0.2.0
+!pip install wheel
+//
+
+import matplotlib.pyplot as plt
+from pdpbox import pdp, get_dataset, info_plots
+
+# Create the data that we will plot
+pdp_goals = pdp.pdp_isolate(model=tree_model, dataset=X_test, model_features=feature_names, feature='Glucose')
+
+# plot it
+pdp.pdp_plot(pdp_goals, 'Glucose')
+plt.show()
+
+3. SHAP Values
+-Tree모델에서의 FeatureImportance가 음수인 경우, 이를 그림으로 표시
+-현재 오류가 있어 실습은 스킵
+
+교재
+Boositing
+-여러 개의 약한 학습기를 순차적으로 학습-예측하면서 잘못 예측한 데이터에 가중치 부여를 통해 오류를 개선해 나가면서 학습하는 방식
+
+Ada boosting
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
+
+iris = datasets.load_iris() #iris 데이터 불러오기
+X = iris.data
+y = iris.target
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3)
+
+abc =AdaBoostClassifier(n_estimators=50, learning_rate=1 random_state=7777) #AdaClassifier 로딩
+
+model = abc.fit(X_train, y_train)
+
+y_pred = model.predict(X_test_
+
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred)
+
+XG boost
+-GBM 모델의 개선형, 대용량 처리에 능하며, 메모리 최적화 모델
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+import warnings
+warnings.filterwarnings('ignore')
+
+from sklearn.preprocessing import OneHotEncoder, LableEncoder
+from sklearn import model_selection
+from sklearn import metrics
+from sklearn import feature_selection
+
+import seaborn as sns
+
+//
+
+data_row = pd.read_csv('경로.csv')
+data_val = pd.read_csv('경로.csv')
+
+data1 = data_raw.copy(deep = True)
+
+data_cleaner = [data1, data_val]
+
+//
+
+for dataset in data_cleaner:
+
+  dataset['Age'].fillna(dataset['Age'].median(), inplace = True)
+
+  dataset['Embarked'].fillna(dataset['embarked'].mode()[0], inpacle = True)
+
+  dataset['Fare'].fillna(dataset['Fare'].median(), inplace = True)
+
+drop_column = ['PassengerId', 'Cabin', 'Ticket'] # 문자열 처리가 곤란하여 drop
+data1.drop(drop_column, axis=1, inplace=True)
+
+print(data1.isnull().sum())
+print("-"*10)
+print(data_val.isnull().sum())
+
+//
+
+for dataset in data_cleaner:
+  dataset['FamilySize'] = dataset['Sibsp'] + dataset['Parch'] +1
+  dataset['IsAlone'] = 1
+  dataset['IsAlone'].loc[dataset['Familysize'] > 1]= 0
+  dataset['Title'] = dataset['Name'].str.split(",", expand=True)[1].str.split(".", expand=True)[0]
+  dataset['FareBin'] = pd.qcut(dateset['Fare'], 4) # qcut 균등하게 자르겠다는 의미, 4는 4등분
+  dataset['AgeBin] = pd.cut(dataset['Age'].astype(int), 5)
+
+stat_min = 10
+title_names = (data1['title'].value_counts() < stat_min)
+
+data1['Title'] = data1['Title'].apply(lambda x: 'Misc' if title_names.loc[x]==True else x)
+print(data['Title'].value_counts())
+print("-"*10)
+
+//
+label = LabelEncoder()
+for dataset in data_cleaner:
+  dataset['Sex_Code'] = label.fit_transform(dataset['Sex'])
+  dataset[Embarked_Code'] = label.fit_transform(dataset['Embarked'])
+  dataset['Title_Code'] = label.fit_transform(dataset['Tittle'])
+  dataset['AgeBin_Code'] = label.fit_transform(dataset['AgeBin'])
+  dataset['FareBin_Code'] = label.fit_transform(dataset['FareBin'])
+
+Target = ['Survived']
+
+#define x variables for original features aka feature selection
+data1_x = ['Sex','Pclass', 'Embarked', 'Title','SibSp', 'Parch', 'Age', 'Fare', 'FamilySize', 'IsAlone'] #pretty name/values for charts
+data1_x_calc = ['Sex_Code','Pclass', 'Embarked_Code', 'Title_Code','SibSp', 'Parch', 'Age', 'Fare'] #coded for algorithm calculation
+data1_xy =  Target + data1_x
+print('Original X Y: ', data1_xy, '\n')
+
+#define x variables for original w/bin features to remove continuous variables
+data1_x_bin = ['Sex_Code','Pclass', 'Embarked_Code', 'Title_Code', 'FamilySize', 'AgeBin_Code', 'FareBin_Code']
+data1_xy_bin = Target + data1_x_bin
+print('Bin X Y: ', data1_xy_bin, '\n')
+#define x and y variables for dummy features original
+data1_dummy = pd.get_dummies(data1[data1_x]) # get_dummies = OneHotEncoding
+data1_x_dummy = data1_dummy.columns.tolist()
+#tolist() 함수를 사용하여 같은 레벨(위치)에 있는 데이터 끼리 묶어준다
+data1_xy_dummy = Target + data1_x_dummy
+print('Dummy X Y: ', data1_xy_dummy, '\n')
+
+data1_dummy.head()
+
+//
+
+!pip install xgboost
+!pip install lightgbm
+!pip install catboost
+
+//
+
+결측치 보완
+
+mean_temp = (df_bikes.iloc[700]['temp'] + df_bikes.iloc[702]['temp'])/2
+mean_atemp = (df_bikes.iloc[700]['atemp'] + df_bikes.iloc[702]['atemp'])/2
+
+df_bikes['temp'].fillna((mean_temp), inplace=True)
+df_bike['atemp'].fillna((mean_atemp), inplace=True)
+
+//
+
+datetime 객체 변환
+df_bikes['dteday'] = pd.to_datetime(df_bikes['dteday'])
+
+//
+
+df_bikes['dteday'].apply(pd.to_datetime, infer-datetime_format=True, errors='coerce')
+
+//
+
+datetime import
+
+import datetime as dt
+
+df_bikes['mmth'] = df_bikes['dteday'].dt.month
+df_bikes.tail()
+
+
