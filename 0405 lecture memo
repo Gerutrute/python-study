@@ -67,7 +67,8 @@ n_estimators: 랜덤 포레스트 안의 결정 트리 갯수
 ExtraTreesClassifier
 - 기존엔 노드 분할 시 최적의 임곗값을 찾는 것이 트리 알고리즘에서 가장 많이 시간을 잡아먹는 부분이었는데 이것이 없어졌으므로 일반적인 Random Forest보다 Extra Tree가 훨씬 빠릅니다.
 
-
+Light GBM
+- Gradient를 선택해서 함.
 
 
 
