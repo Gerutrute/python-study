@@ -1,0 +1,79 @@
+결정트리
+
+import sys
+if 'google.colab' in sys.modules:
+    !wget -q https://raw.githubusercontent.com/rickiepark/handson-gb/main/Chapter02/census_cleaned.csv
+    !wget -q https://raw.githubusercontent.com/rickiepark/handson-gb/main/Chapter02/bike_rentals_cleaned.csv
+    !wget -q https://raw.githubusercontent.com/rickiepark/handson-gb/main/Chapter02/heart_disease.csv
+
+import pandas as pd
+import numpy as np
+
+import warnings
+warining.filterwarnings('ignore')
+
+//
+df_census = pd.read_csv('census_cleaned.csv')
+
+X = df_census.iloc[:,:-1]
+y = df_census.iloc[:,-1]
+
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=2)
+
+//
+
+from sklearn.tree import DecisionTreeClassifier
+
+from sklearn.metrics import accuracy_score
+
+clf = DecisionTreeClassifier(random_state=2)
+
+clf.fit(X_train, y_train)
+
+y_pred = clf.predict(X_test_
+
+accuracy_score(y_pred, y_test)
+
+노드 갯수 확인
+
+leaf_node_count = 0
+tree = reg.tree_
+for i in range(tree.node_count):
+  if(tree.children_left[i] == -1) and (tree.children_right[i] == -1):
+    leaf_node_count += 1
+    if tree.n_node_samples[i] > 1:
+      print('노드 인덱스:', i, ', 샘플 개수:', tree.n_node_smaples[i])
+print('전체 리프 노드 개수:', leaf_node_count)
+
+//
+
+모델링 마친 후에 성능이 안오를 떄 Gridsearch CV를 할 것.
+
+일반적으로 max 이름을 가진 매개변수로 감소시키고 min 이름을 가진 매개변수를 증가시키면 분산을 줄이고 과대적합 방지
+
+XGBoost hyperparameters
+
+import sys
+if 'google.colab' in sys.modules:
+    !pip install -q --ugrade.xgboost
+    !wget -q https://raw.githubusercontent.com/rickiepark/handson-gb/main/Chapter06/heart_disease.csv
+
+Hyperparameter
+n_estimators: 랜덤 포레스트 안의 결정 트리 갯수
+- n_estimators는 클수록 좋습니다.
+
+ExtraTreesClassifier
+- 기존엔 노드 분할 시 최적의 임곗값을 찾는 것이 트리 알고리즘에서 가장 많이 시간을 잡아먹는 부분이었는데 이것이 없어졌으므로 일반적인 Random Forest보다 Extra Tree가 훨씬 빠릅니다.
+
+
+
+
+
+
+
+
+
+
+
