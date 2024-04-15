@@ -1,0 +1,286 @@
+딥러닝
+
+강 인공지능 : 스카이넷, 터미네이터
+약 인공지능 : 특정한 목적을 풀 때 사용 // 알파고
+
+정형데이터 통계학적 목적을 위해 머신러닝에 많이씀 // CSV 수치 데이터
+딥러닝 연구 : 사람 뇌 인지과학에서 많이 연구함
+
+뇌속 신경과 딥러닝 인공신경망은 유사한 구조를 가지고 있음.
+이미지 전처리 : opencv 많이 씀
+컴퓨터는 행열 인식을 열부터 하기에 열로 나열하는 것이 유리함.
+
+딥러닝의 경우, 코어 수가 많은 GPU로 처리하는 것이 빠름.
+
+TPU : CPU + GPU
+
+GPU마다 Cuda가 다르기 때문에 적합한 버전의 Cuda를 설치해야함
+
+싱글뉴런 모델 : Perceptron
+
+기울기 소실하는 경우, Loss가 안줄거나 늘어나게 됨. // 예상치 못한 상황을 우려하여 초기 모니터링이 중요함
+심층신경망 : Hidden 레이어가 2개 이상
+
+Underfitting 해결을 위해서는 활성함수를 변경하는 방법도 있음.
+
+AND 연산 퍼셉트론 구현
+
+import numpy as np
+
+def AND(x1, x2)
+  x = np.array([x1, x2])
+  w = np.array([0.5, 0.5]) # 초기값 설정
+  b = -0.7 # 절편
+  tmp = np.sum(w * x) +b
+  if tmp <=0   # tmp가 0보다 작거나 같으면 이 조건문에 걸림
+    return 0 # 반환값
+  else : #tmp가 0보다 크면
+    return 1
+
+data = []
+for xs in [(0, 0), (1, 0), (0, 1), (1, 1)]:
+  data.append(xs)
+print(data[0])
+y = AND(xs[0], xs[1])
+print(str(xs) + "->" +str(y))
+
+NAND 연산 퍼셉트론 구현
+
+def NAND(x1, x2):
+    x = np.array([x1, x2])
+    w = np.array([-0.5, -0.5])
+    b = 0.7
+    tmp =  np.sum(w * x) + b
+    if tmp <= 0:
+        return 0
+    else:
+        return 1
+
+for xs in [(0, 0), (1, 0), (0, 1), (1, 1)]:
+    y = NAND(xs[0], xs[1])
+    print(str(xs) + " -> " + str(y))
+
+OR 연산 퍼셉트론 연산
+
+def OR(x1, x2):
+    x = np.array([x1, x2])
+    w = np.array([2, 2])
+    b = -1
+    tmp =  np.sum(w * x) + b
+    if tmp <= 0:
+        return 0
+    else:
+        return 1
+
+for xs in [(0, 0), (1, 0), (0, 1), (1, 1)]:
+    y = OR(xs[0], xs[1])
+
+XOR 연산 다층 퍼셉트론 구현
+
+def XOR(x1, x2):
+    s1 = NAND(x1, x2)
+    s2 = OR(x1, x2)
+    y = AND(s1, s2)
+    return y
+
+print("NAND, OR, AND")
+for xs in [(0, 0), (1, 0), (0, 1), (1, 1)]:
+    y = XOR(xs[0], xs[1])
+    print(str(xs) + " -> " + str(y))
+    print(str(xs) + " -> " + str(y))
+
+텐서플로우
+데이터표현
+스칼라(rank-0 텐서)
+import numpy as np
+x = np.array(12)
+x
+-> array(12)
+
+x.ndim
+-> 0 # 0차원
+
+벡터(rank-1 Tensor)
+x = np.array([12, 3, 6, 14, 7])
+x
+-> array([12, 3, 6 , 14, 7])
+
+x.ndim
+-> 1 # 1차원
+
+행렬(rank-2 Tensor)
+x = np.array([[5, 78, 2, 34, 0],
+              [6, 79, 3, 35, 1],
+              [7, 80, 4, 36, 2]])
+x.ndim
+-> 2
+
+rank 3 Tensor와 더 높은 rank의 Tensor
+x = np.array([[[5, 78, 2, 34, 0],
+               [6, 79, 3, 35, 1],
+               [7, 80, 4, 36, 2]],
+              [[5, 78, 2, 34, 0],
+               [6, 79, 3, 35, 1],
+               [7, 80, 4, 36, 2]],
+              [[5, 78, 2, 34, 0],
+               [6, 79, 3, 35, 1],
+               [7, 80, 4, 36, 2]]])
+x.ndim
+-> 3
+
+Constant
+상수를 뜻함. 변하지 않고 고정된 값을 의미함.
+Variable
+변수를 뜻함. 변수는 수학에서 투입값에 따라 변하는 숫자를 의미함.
+하지만, 텐서플로의 Variable은 Constant와 큰 차이가 없습니다.
+
+@tf.function은 텐서플로우에서 자동으로 그래프를 생성(Auto graph)해주는 기능. 
+
+계산 그래프를 활용한 자동 미분
+import tensorflow as tf
+x = tf.Variable(0.)
+print(x)
+with tf.GradienTape() as tape: # Propagation
+  y = 2 * x + 3
+grad_of_y_wrt_x = tape.gradient(y, x) # back propagation
+
+딥러닝의 경우, 결과값이 마음대로 나오지 않고, 오류가 나와도 알 수 없는 경우가 많음.
+
+GradienTape로 미분된 것을 찾을 수 있음.
+
+Sequential API
+
+import tensorflow as tf
+
+tr.random.set_seed(777)
+import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.laysers import Dense #fully connected
+from tensorflow.keras.optimizers import SGD # Stochastic gradient descent
+from tensorflow.keras.losses import mse # mean square error
+
+x = np.array([[0,0], [1,0], [0,1], [1,1]])
+y = np.array([0], [1], [1], [0]])
+
+model = Sequential()
+model.add(Dense(1, input_shape = (2,), activation = 'linear'))
+
+model.compile(optimizer = 'SGD'
+              loss = mse.
+              metrics = ['acc']) # list형태로 평가지표 전달
+
+model.fit(x, y, epochs = 500)
+
+랜덤 시드이기에 초기값에 따라 acc가 1이 나오는 경우도 있음.
+Loss가 별로 안줄어드는 구간이 있는데 이 구간은 필요가 없음.
+
+현업에서 Langchain 많이 씀
+
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+model = keras.Sequential(
+  [
+    layers.Dense(2, activation = 'relu', kernel_regularizer=keras.regularizers.l2(0.01) #패널티, name = 'layer1'),
+    layers.Dense(3, activation = 'relu', activation = 'relu', name = 'layer2'),
+    layers.Dense(4. name = 'layer3'),
+  ]
+)
+x = tf.ones((3,3))
+y = model(x)
+
+Functional API
+모델을 한 층 한 층 쌓기 어렵기에 활용(각 Layer를 concat 해줌)
+
+import tensorflow as tf
+import numpy as np
+
+x_data = [[0., 0.], [0., 1.], [1., 0.], [1., 1.]]
+y_data = [[0.], [1.], [1.], [0.]]
+
+input_Layer = tf.keras.layers.Input(shape=(2,))
+x = tf.keras.layers.Dense(2, activation = 'sigmoid')(input_Layer)
+Out_Layer = tf.keras.layers.Dense(1, activation = 'sigmoid')(x)
+model = tf.keras.Model(inputs=[input_Layer], outputs=[Out_layer])
+model.summary()
+
+optimizer = tf.keras.optimizers.SGD(lr=0.7)
+loss=tf.keras.losses.binary_crossentropy
+metrics = tf.keras.metrics.binary_accuracy
+
+model.compile(loss=loss, optimizer=optimizer, metrics = [metrics])
+
+model.fit(x_data, y_data, epochs=100, batch_size=4)
+
+model custom
+
+input_A = keras.layers.Input(shape=[5], name='wide_input')
+input_B = keras.layers.Input(shape=[6], name='deep_input')
+hidden1 = keras.layers.Dense(30, activation='relu')(input_B)
+hidden2 = keras.layers.Dense(30, activation='relu')(hidden1)
+concat = keras.layers.concatenate([input_A, hidden2])
+output = keras.layers.Dense(1, name='output')(concat)
+model = keras.Model(inputs=[input_A, input_B], outputs=[output])
+
+class python
+
+class : 객체(object)를 만드를 구조/틀
+instance : 클래스가 실질적으로 객체를 만들었을 때 그 객체를 부르는 용어
+
+Subclass API
+- 모델 분석/디버깅이 쉬우며, 다른 곳에서 복사, 공유가 쉬움
+- 장점 : Functional API로도 구현할 수 없는 모델들도 구현 가능 / 단점 : 객체 지향 프로그래밍으로 코드사용하기 까다로움
+
+class MyLayer(tf.keras.layers.Layer):
+  def __init__(self):
+    super(MyLayer, self).__init__()
+    self.d1 = tf.keras.layers.Dense(64, activation = 'relu')
+    self.d2 = tf.keras.layers.Dense(10,activation = 'softmax')
+
+  def call(self, x):
+    x = self.d1(x)
+    return self.d2(x)
+
+inputs = tf.keras.Input(shape = (784.))
+
+outputs = MyLayer()(inputs)
+
+model = tf.keras.Model(inputs=inputs, outputs=outputs. name='mnist_model')
+
+
+class Linear(keras.layers.Layer):
+  def __init__(self, units=32, input_dim=32):
+    super(Linear, self).__init__()
+    w_init = tf.random_normal_initializer()
+    self.w = tf.Variable(
+      initial_value = w_init(shape = (input_dim, units). dtype = 'float32')
+      trainable = True,
+    )
+    b_init = tf.zeros_initializer()
+    self.b = tf.Variable(
+      initial_value = b_init(shape = (units,), dtype = 'float32'), trainable = True
+    )
+
+  def call(self, inputs):
+    return tf.matmul(inputs, self.w) + self.b
+
+선형회귀
+horsepower = np.array(train_features['Horsepower'])
+
+horsepower_normalizer = layers.Normalization(input_shape=[1,], axis=None)
+horsepower_normalizer.adapt(horsepower)
+
+Keras 모델빌드
+horsepower_model = tf.keras.Sequential([
+  horsepower_normalizer,
+  layers.Dense(units=1)
+])
+
+horsepower_model.summary()
+
+
+
+4/26 개인과제 제출
+5/7 프로젝트 발표
