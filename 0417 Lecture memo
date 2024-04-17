@@ -1,0 +1,152 @@
+영어 Word2Vec 만들기
+
+import re
+import urlib.request
+import zipfile
+from lxml import etree
+from nltk.tokenize import word_tokenize, sent_tokenize
+import nltk
+nltk.download('punkt')
+
+urllib.request.urlretrieve("https://raw.githubusercontent.com/ukairia777/tensorflow-nlp-tutorial/main/09.%20Word%20Embedding/dataset/ted_en-20160408.xml", filename="ted_en-20160408.xml")
+
+targetXML = open('ted_en-20160408.xml', 'r', encoding='UTF8')
+target_text = etree.parse(targetXML)
+
+parse_text = '/n'.join(target_text.xpath('//content/text()'))
+
+content_text = re.sub(r'\([^]*\)','', parse_text)
+
+sent_text = sent_tokenize(content_text)
+
+normalized_text = []
+for string in sent_text:
+    tokens = re.sub(r"[^a-z0-9]+", " ", string.lower())
+    narmalized_text.append(tokens)
+
+result = [word_tokenize(sentence) for sentence in normalized_text]
+
+print('총 샘플의 개수 : {}'format(len(result)))
+
+for line in result[:3]: # 샘플 3개 출력
+    print(line)
+
+Word2Vec 훈련시키기
+
+파라미터
+size = 워드 벡터의 특징 값. 즉, 임베딩 된 벡터의 차원.
+window = 컨텍스트 윈도우 크기
+min_count = 단어 최소 빈도 수 제한 (빈도가 적은 단어들은 학습하지 않는다.)
+workers = 학습을 위한 프로세스 수
+sg = 0은 CBOW, 1은 Skip-gram.
+
+from gensim.models import Word2Vec
+from gensim.models import KeyedVectors
+
+model = Word2Vec(sentences=result, vector_size = 100, window = 5, min_count = 5, workers = 4, sg = 0)
+
+model_result = model.wv.most_similar('man')
+print(model_result)
+
+Word2Vec 모델 저장하고 로드하기
+
+model.wv.save_word2vec_format('eng_w2v') #모델 저장
+loaded_model = KeyedVectors.load_word2vec_format('eng_w2v') #모델 로드
+
+model_result = loaded_model.most_similar('soldier')
+print(model_result)
+
+20뉴스그룹 데이터 전처리하기
+
+import pandas as pd
+import numpy as np
+import nltk
+from nltk.corpus import stopwords
+from sklearn.datasets import fetch_20newsgroups
+from tensorflow.keras.preprocessing.text import Tokenizer
+
+dataset = fetch_20newsgroup(shuffle=True, random_state = 1, remove = ('hearders', 'footers', 'quotes')
+documents = dataset.data
+print('총 샘플 수 :', len(docmuents))
+
+news_df = pd.DataFrame({'document' : documents})
+
+news_df['clean_doc'] = news_df['document'],str.replace('[^a-zA-Z]', " ")
+
+news_df['clean_doc'] = news_df['clean_doc'].apply(lambda x: ' '.join([w for w in x.split() if len(w)>3]))
+
+news_df['clean_doc'] = news_df['clean_doc'].apply(lambda x: x.lower())
+
+news_df.isnull().values.any()
+
+news_df.replace("", float("NaN"), inplace=True)
+news_df.isnull().values.any()
+
+news_df.dropna(inplace=True)
+print('총 샘플 수:',len(news_df))
+
+import nltk
+nltk.download('stopwords')
+stop_words = stopwords.words('english')
+tokenized_doc = news_df['clean_doc'].apply(lambda x : x.split())
+tokenized_doc = tokenized_doc.apply(lambda x : [item fo item in x if item not in stop_words])
+tokenized_doc = tokenized_doc.to_list()
+
+drop_train = [index for index, sentence in enumerate(tokenized_doc) if len(sentence) <=1]
+tokenized_doc = np.delete(np.array(tokenized_doc, dtype=object), drop_train, axis=0)
+print('총 샘플 수:'. len(tokenized_doc))
+
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(tokenized_doc)
+
+word2idx = tokenizer.word_index
+idx2word = {value : key for key, value in word2idx.items()}
+encoded = tokenizer.texts_to_sequences(tokenized_doc)
+
+print(encoded[:2])
+
+vocab_size = len(word2idx) + 1
+print('단어 집합의 크기:', vocab_size_
+
+from tensorflow.keras.preprocessing.sequence import skipgrams
+skip_grams = [skipgrams(sample, vocabulary_size = vacab_size. window_size=10) for sample in encoded[:10]]
+
+pairs, labels = skip_grams[0][0], skip_grams[0][1]
+for i in range(5):
+    print('({:s} ({:d}), {:s} ({:d})) -> {:d}".format(
+        idx2word[pairs[i][0], pairs[i][0],
+        idx2word[pairs[i][1], pairs[i][1],
+        labels[i]))
+
+print("전체 샘플 수:". len(skip_grams))
+
+print(len(pairs))
+print(len(labels))
+
+skip_grams = [skipgrams(sample, vocabulary_size = vocab_size, window_size=10) for sample in encoded]
+
+skip-gram with negative sampling(SGNS) 구현
+
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Embedding, Reshape, Activation, Input
+from tensorflow.keras.layers import Dot
+from tensorflow.keras.utils import plot_model
+from IPython.display import SVG
+
+하이퍼파라미터인 임베딩 벡터의 차원은 100으로 정하고, 두 개의 임베딩 층을 추가
+embedding_dim = 100
+
+w_inputs = Input(shape=(1, ), dtype='int32')
+word_embedding = Embedding(vocab_size, embedding_dim)(w_inputs)
+
+c_inputs = Input(shape = (1, ), dtype='int32')
+context_embedding = Embedding(vocab_size, embedding_dim)(c_inputs)
+
+dot_product = Dot(axes=2)([word_embedding, context_embedding])
+dot_product = Reshape((1, ), input_shape=(1, 1)(dot_product)
+output = Activation('sigmoid)(dot_product)
+
+model = Model(inputs=[w_inputs, c_inputs], outputs=output)
+model.summary()
+model.compile(loss='binary_crossentropy', optimizer='adam')
+plot_model(model, to_file='model3.png', show_shapes=True, show_layer_names=True, rankdir='TB')
