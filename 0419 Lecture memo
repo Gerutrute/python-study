@@ -1,0 +1,214 @@
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from tensorflow.keras.datasets import reuters
+
+(X_train, y_train), (X_test, y_test) = reuters.load_data(num_words = None, test_split=0.2)
+
+print('훈련용 뉴스 기사 : {}'.format(len(X_train)))
+print('테스트용 뉴스 기사 : {}'.format(len(X_test)))
+num_classes  = len(set(y_train)
+print('카테고리' : {}'.format(num_classes))
+
+print('첫번째 훈련용 뉴스 기사 :', X_train[0])
+print('첫번째 훈련용 뉴스 기사의 레이블 :', y_train[0])
+
+print('뉴스 기사의 최대 길이 : {}'.format(max(len(sample) for sample in X_train)))
+print('뉴스 기사의 평균 길이 : {}'.format(sum(map(len, X_train))/len(X_train)))
+
+plt.hist([len(sample) for sample in X_train], bins=50)
+plt.xlabel('length of samples')
+plt.ylabel('number of samples')
+plt.show()
+
+fig, axe = plt.subplots()
+fig.set_size_inches(12,5)
+sns.countplot(x=y_train)
+
+unique_elements, counts_elements = np.unique(y_train, return_counts=True)
+print("각 레이블에 대한 빈도수:")
+print(np.asarray((unique_elements, counts_elements)))
+
+word_to_index = reuters.get_word_index()
+print(word_to_index)
+
+index_to_word = {}
+for key, value in word_to_index.items():
+    index_to_word[value+3] = key
+
+for index, token in enumerate("<pad>", "<sos>", "<unk>")):
+    index_to_word[index] = token
+
+print(' '.join([index_to_word[index] for index in X_train[0]))
+
+LSTM으로 로이터 뉴스 분류하기
+
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense, LSTM, Embedding
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+
+vocab_size = 1000
+max_len = 100
+
+(X_train, y_train), (X_test, y_test) = reuters.load_data(num_words=vocab_size, test_split=0.2)
+
+X_train = pad_sequences(X_train, maxlen=max_len)
+X_test = pad_sequences(X_test, maxlen=max_len)
+
+y_train = to_categorical(y_train)
+y_test = to_categorical(y_test)
+
+embedding_dim = 128
+hidden_units = 128
+num_classes = 46
+
+model = Sequential()
+model.add(Embedding(vocab_size, embedding_dim))
+model.add(LSTM(hidden_units))
+model.add(Dense(num_classes, activation = 'softmax'))
+
+es = EarlyStopping(monitor = 'val_loss', mode='min', verbose=1, patience = 4)
+mc = ModelCheckpoint('best_model.h5', monitor='val_acc', mode='max', verbose=1, save_best_only=True)
+
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+history = model.fit(X_train, y_train, batch_size=128, epochs=30, callback=[es, mc], validation_data = (X_test, y_test))
+
+기온 예측 문제
+import numpy as np
+
+float_data = np.zeros((len(lines)m len(header) -1))
+for i, line in enumerate(lines):
+    values = [float(x) for x in line.split(','[1:]]
+    float_data[i, :] = values
+
+from maplotlib import pyplot as plt
+
+temp = float_data[:, 1]
+plt.plot(range(len(temp)), temp)
+plt.show()
+
+mean = float_data[:200000].mean(axis=0)
+float_data -= mean
+std = float_data[:200000].std(axis=0)
+float_data /= std
+
+def test_generator():
+    yield 1
+    yield 2
+    yield 3
+
+def yield_test():
+    for i in range(5):
+        yield i
+        print(i, '번째 호출!'
+
+def add_all(*args) :
+
+def generator(data, lookback, delay, min_index, max_index, shuffle=False, batch_size=16, step=6):
+    if max_index is None:
+        max_index = len(data) - delay -1
+    i = min_index + lookback
+    while 1:
+        if shuffle:
+            rows = np.random.randit(min_index + lookback. max_index, size=batch_size)
+        else:
+            if i + batch_size >= max_index:
+                i = min_index + lookback
+            rows = np.arrange(i, min(i + batch_size, max_index))
+            i += len(rows)
+
+        samples = np.zeros((len(rows), lookback // step, data.shape[-1]))
+        targets = np.zeros((len(rows),))
+        for j, row in enumerate(rows):
+            indices = range(rows[j] - lookback, rows[j], step)
+            samples[j] = data[indices]
+            targets[j] = data[rows[j] + delay][1]
+        yield samples, targets
+
+Seq2Seq 모델 한계
+
+import re
+import os
+import unicodedata
+import urllib3
+import zipfile
+import shutil
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+import matplotlib.pyplot as plt
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.layers import Input, LSTM, Embedding, Dense
+from tensorflow.keras.models import Model
+
+!wget http://www.manythings.org/anki/fra-eng.zip
+
+zipfilename = '/content/fra-eng.zip'
+
+with zipfile.Zipfile(zipfilename, 'r') as zip_ref:
+    zip_ref.extracall('.')
+
+configuration
+BATTCH_SIZE = 64
+EPOCHS = 100
+HIDDEN_DIM = 256
+EMBEDDING_DIM = 64
+NUM_SAMPLES = 33000
+
+prepare the data
+
+def unicode_to_ascii(s):
+    return ''.join(c for c in unicodedata.normarlize('NFD', s) if unicodedata.category)c_ ! = 'Mn')
+
+def preprocess_sentence(sent):
+
+    sent = unicode_to_ascii(sent.lower())
+
+    sent = re.sub(r"([?, !;¿])", r"\1", sent)
+
+    sent = re.sub(r"[^a-zA-Z!.?]+", r" ", sent)
+
+    sent = re.sub(r"\s", " ", sent)
+
+    return sent
+
+eng_corpus, fra_corpus = [], []
+with open("fra.txt", "r") as lines:
+    for i, line in enumerate(line):
+        tar_line, src_line, _ = line.strip().split('\t')
+
+        eng_corpus.append(tar_line)
+        fra_corpus.append(src_line)
+
+print(len(eng_corpus), eng_corpus[:10])
+print(len(fra_corpus). fra_corpus[:10])
+
+encoder_input, decoder_input, decoder_target = [], [], []
+
+for i, (src_line, tar_line) in enumerate(zip(fra_corpus, eng_corpus)):
+
+    src_line = [w for w in preprocess_sentence(src_line).split()]
+
+    tar_line = preprocess_sentence(tar_line)
+    print('tar_line:', tar_line)
+
+    tar_line_in = [w for w in ("<sos>" + tar_line).split()]
+    print('tar_line in :', tar_line_in)
+
+    tar_line_out = [w for w in (tar_line + "<eos>").split()]
+    print('tar_line out:', tar_line_out)
+
+    encoder_input.append(src_line)
+    decoder_input.append(tar_line_in)
+    decoder_target.append(tar_line_out)
+
+    if i == NU<_SAMPLES - 1:
+        break
+    break
+
+
+
+
