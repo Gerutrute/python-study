@@ -1,0 +1,51 @@
+트랜스포머
+Encoder weight 전달, 유의성 확인
+Decoder 상관성 및 정답확인
+Seq2Seq에서는 동음이의어 처리가 안되나 트랜스포머에서는
+단어간의 관계를 가중치를 계산하여 문맥으로 파악가능
+트랜스포머의 경량화는 허깅페이스에서 찾아볼 수 있음
+Represent 공간 = 8개 헤드 계산값을 담을 새로운 공간
+
+전이학습 : 기존에 사전학습된 모델을 가져와서 데이터 학습 시키는 것
+이미지 분류에서 주로 사용 // 사전데이터와 라벨의 종류가 다를 경우, 최적화 모델은 아니더라도 실행은 할 수 있으나, 정확도 보장은 안됨.
+자연어 처리에서 잘 사용안함.
+
+Bert
+BERT의 기본 구조는 transformer의 인코더를 쌓아올린 구조. Base 버전에선 총 12개를 쌓았으며, Large 버전에선 총 24개
+cls = classification token
+
+import pandas as pd
+from transformers import BertTokenizer
+
+tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+# pretrained 모델 로딩
+
+result = tokenizer.tokenize("Here is the sentence I want embeddings for.')
+print(result)
+
+HuggingFace란?
+HuggingFace는 자연어 처리, 더 나아가 딥러닝을 위한 오픈소스 라이브러리를 제공하는 회사
+
+파이썬과 PyTorch, TensorFlow를 위한 최신의 Transformer 아키텍처를 쉽게 사용할 수 있게 함
+
+여러 라이브러리 중 가장 유명한 Transformers 제공
+
+Transforemrs : 다양한 사전 학습된 모델(Pre-Trained Model) 제공,
+모델 Hub로서의 역할
+BERT, GPT-2, RoBERTa, XLM, DistilBert, XLNet 등과 같은 주요 모델들이 포함
+이러한 모델들은 텍스트 분류, 정보 추출, 질문 응답, 요약, 번역, 텍스트 생성 등의 NLP 작업을 수행하는 데 사용가능
+https://huggingface.co/
+
+from transformers import TFBertForMaskedLM
+from transformers import AutoTokenizer
+
+masked_model = TFBertforMaskedLM.from_pretrained('bert-base-uncased')
+tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+
+import pandas as pd
+from transformers import BertTokenizer
+
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+다음 문장 예측하기
+
