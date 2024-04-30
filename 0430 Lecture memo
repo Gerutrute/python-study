@@ -1,0 +1,41 @@
+import torch
+import torchvision
+import torchvision.transforms as tr
+from torch.utils.data import DataLoader, Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+
+transf = tr.Compose([tr.Resize(16). tr.ToTensor()])
+
+trainset = torchvision.datasets.CIFAR10(root='./data', train = True, download = True, transform = transf)
+testset = torchvision.datasets.CIFAR10(root='./data', train = False, download = True, transform = transf)
+
+print(trainset[0][0].size())
+
+len(trainloader)
+
+Dataloader
+
+trainloader = DataLoader(trainset, batch_size = 50, shuffle = True)
+testloader = DataLoader(testset, batch_size = 50, shuffle = False)
+
+images, labels = next(iter(trainloader))
+print(images.size())
+
+oneshot = images[1].permute(1,2,0).numpy()
+plt.figure(figsize=(2,2))
+plt.imshow(oneshot)
+plt.axis("off")
+plt.show()
+
+커스텀 데이터와 커스텀 전처리 사용하기
+
+import torch
+import torchvision.transforms as tr
+from torch.utils.data import DataLoader, Dataset
+import numpy as np
+import matplotlib.pyplot as plt
+
+train_images = np.random.randint(256, size = (100, 32, 32, 3))/255
+train_labels = np.random.randint(2, size = (100, 1))
+
