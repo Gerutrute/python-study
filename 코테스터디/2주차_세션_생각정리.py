@@ -106,7 +106,42 @@ speed = [2,10,3,1,5,8],# k명 고르고 더하기 / 이거 튜플이야...
 efficiency = [5,4,3,9,7,2],# k명 중 최소값 곱하기 / 이거 튜플이야...
 k = 2
 # k 명의 팀이 최대 효율을 내기 위해서는 speed 합계가 높고 팀의 efficiency 최소값이 높아야 함.
-for i, j in zip(speed[0], efficiency[0]): # [0] 이 표현을 통해서 튜플 자물쇠를 풀 수 있음.
-    print(i, j)
+# for i in speed[0]: # [0] 이 표현을 통해서 튜플 자물쇠를 풀 수 있음.
+#     for j in speed[0]:
+#         if j != i: # j가 i와 다르면
+#             for k in speed[0]:
+#                 if k != i and k != j: # k가 i와 j와 다르면
+#                     print(i+j+k) # 더해라
 
-# return result / (10**9 + 7)
+max_speed_list = []
+max_eff_list = []
+max_value = 0
+
+# for i, x in zip(speed[0], efficiency[0]): # [0] 이 표현을 통해서 튜플 자물쇠를 풀 수 있음.
+#     for j, y in zip(speed[0], efficiency[0]):
+#         if j != i: # j가 i와 다르면
+#             for k, z in zip(speed[0], efficiency[0]):
+#                 if k != i and k != j: # k가 i와 j와 다르면
+#                     print("[",i,j,k,"]=",i+j+k, "[", x, y, z,"]=", min(x,y,z), "->", (i+j+k) * min(x,y,z)) # 더해라
+# 뭔가 이제 최대값을 result에 기록하고 최대값이 나오는 i,j,k와 x,y,z를 출력하면 될거 같은데?
+
+for i, x in zip(speed[0], efficiency[0]): # [0] 이 표현을 통해서 튜플 자물쇠를 풀 수 있음.
+    for j, y in zip(speed[0], efficiency[0]):
+        if j != i: # j가 i와 다르면
+            for k, z in zip(speed[0], efficiency[0]):
+                if k != i and k != j: # k가 i와 j와 다르면
+                    if (i+j+k) * min(x,y,z) >= max_value:
+                        max_speed_list = [i,j,k]
+                        max_eff_list = [x,y,z]
+                        max_value = (i+j+k) * min(x,y,z)
+
+print(max_speed_list, max_eff_list, max_value)
+
+# result / (10**9 + 7)
+
+"""
+1. for 문을 이용해서 i, j 요소를 zip으로 speed와 efficiency를 순회
+2. for 문을 이용해서 j, y 요소를 zip으로 speed와 efficiency를 순회
+3. for 문을 이용해서 k, z 요소를 zip으로 speed와 efficiency를 순회
+4. 
+"""
