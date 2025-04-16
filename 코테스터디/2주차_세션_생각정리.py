@@ -139,9 +139,58 @@ print(max_speed_list, max_eff_list, max_value)
 
 # result / (10**9 + 7)
 
-"""
-1. for 문을 이용해서 i, j 요소를 zip으로 speed와 efficiency를 순회
-2. for 문을 이용해서 j, y 요소를 zip으로 speed와 efficiency를 순회
-3. for 문을 이용해서 k, z 요소를 zip으로 speed와 efficiency를 순회
-4. 
-"""
+1. 빈 리스트 두 개를 생성:
+     comb_speed_list ← 빈 리스트
+     comb_effi_list  ← 빈 리스트
+
+2. 함수 nCr(리스트, r)을 정의:
+     - 입력된 리스트의 원소들 중에서 r개를 선택하는 모든 조합을 리스트 형태로 반환.
+
+3. 두 개의 리스트를 정의:
+     speed      ← [2, 10, 3, 1, 5, 8]
+     efficiency ← [5, 4, 3, 9, 7, 2]
+
+4. 0부터 speed 리스트의 길이까지 (즉, 0개부터 6개까지) 반복:
+     a. speed 리스트에서 i개씩 뽑은 모든 조합 생각.
+     b. 구한 조합들을 comb_speed_list에 추가.
+
+5. 0부터 efficiency 리스트의 길이까지 (즉, 0개부터 6개까지) 반복한다:
+     a. efficiency 리스트에서 z개씩 뽑은 모든 조합을 구한다.
+     b. 구한 조합들을 comb_effi_list에 추가한다.
+
+6. comb_speed_list에 저장된 요소(각 조합 집합)의 개수를 출력한다.
+
+7. 각 조합의 크기별 (0개, 1개, 2개, …, 6개)로 comb_speed_list와 comb_effi_list의 대응되는 원소들에 대해 다음을 수행:
+     a. speed 리스트에서의 조합 집합과 efficiency 리스트에서의 조합 집합을 각각 current_speed와 current_effi에 할당.
+     b. current_speed와 current_effi에서 같은 위치에 있는 각각의 조합을 쌍으로 매칭하여 반복.
+          i. 만약 speed 조합(예: j)이 비어있지 않으면 다음을 계산:
+               - speed 조합의 합: sum(j)
+               - efficiency 조합의 최솟값: min(y)
+               - 두 값을 곱한 결과: sum(j) * min(y)
+          ii. 이 결과들을 출력.
+
+import itertools
+
+comb_speed_list = []
+comb_effi_list = []
+
+def nCr(a, r):
+    return list(itertools.combinations(a, r))
+
+speed = [2,10,3,1,5,8],
+efficiency = [5,4,3,9,7,2],
+
+for i, z in zip(range(len(speed[0])+1), range(len(efficiency[0])+1)):
+    combi_speed = nCr(speed[0],i)
+    comb_speed_list.append(combi_speed)
+    combi_effi = nCr(efficiency[0],z)
+    comb_effi_list.append(combi_effi)
+
+print(len(comb_speed_list))
+
+num = 0
+
+for i, x in zip(comb_speed_list, comb_effi_list):
+    for j, y in zip(i, x):
+        if j :
+            print(j, y, sum(j), min(y), sum(j)*min(y))
