@@ -139,37 +139,8 @@ print(max_speed_list, max_eff_list, max_value)
 
 # result / (10**9 + 7)
 
-1. 빈 리스트 두 개를 생성:
-     comb_speed_list ← 빈 리스트
-     comb_effi_list  ← 빈 리스트
-
-2. 함수 nCr(리스트, r)을 정의:
-     - 입력된 리스트의 원소들 중에서 r개를 선택하는 모든 조합을 리스트 형태로 반환.
-
-3. 두 개의 리스트를 정의:
-     speed      ← [2, 10, 3, 1, 5, 8]
-     efficiency ← [5, 4, 3, 9, 7, 2]
-
-4. 0부터 speed 리스트의 길이까지 (즉, 0개부터 6개까지) 반복:
-     a. speed 리스트에서 i개씩 뽑은 모든 조합 생각.
-     b. 구한 조합들을 comb_speed_list에 추가.
-
-5. 0부터 efficiency 리스트의 길이까지 (즉, 0개부터 6개까지) 반복한다:
-     a. efficiency 리스트에서 z개씩 뽑은 모든 조합을 구한다.
-     b. 구한 조합들을 comb_effi_list에 추가한다.
-
-6. comb_speed_list에 저장된 요소(각 조합 집합)의 개수를 출력한다.
-
-7. 각 조합의 크기별 (0개, 1개, 2개, …, 6개)로 comb_speed_list와 comb_effi_list의 대응되는 원소들에 대해 다음을 수행:
-     a. speed 리스트에서의 조합 집합과 efficiency 리스트에서의 조합 집합을 각각 current_speed와 current_effi에 할당.
-     b. current_speed와 current_effi에서 같은 위치에 있는 각각의 조합을 쌍으로 매칭하여 반복.
-          i. 만약 speed 조합(예: j)이 비어있지 않으면 다음을 계산:
-               - speed 조합의 합: sum(j)
-               - efficiency 조합의 최솟값: min(y)
-               - 두 값을 곱한 결과: sum(j) * min(y)
-          ii. 이 결과들을 출력.
-
 import itertools
+
 
 comb_speed_list = []
 comb_effi_list = []
@@ -180,17 +151,34 @@ def nCr(a, r):
 speed = [2,10,3,1,5,8],
 efficiency = [5,4,3,9,7,2],
 
-for i, z in zip(range(len(speed[0])+1), range(len(efficiency[0])+1)):
+for i in range(len(speed[0])+1) :
     combi_speed = nCr(speed[0],i)
     comb_speed_list.append(combi_speed)
-    combi_effi = nCr(efficiency[0],z)
+
+    combi_effi = nCr(efficiency[0],i)
     comb_effi_list.append(combi_effi)
 
-print(len(comb_speed_list))
-
-num = 0
 
 for i, x in zip(comb_speed_list, comb_effi_list):
     for j, y in zip(i, x):
         if j :
             print(j, y, sum(j), min(y), sum(j)*min(y))
+
+
+"""
+1. itertools을 import
+2. speed, efficiency 리스트 작성
+3. comb_speed_list 빈 리스트 작성
+4. comb_effi_list 빈 리스트 작성
+5. nCr 함수 작성, itertools.combination 사용
+6. speed에 슬라이싱 [0]으로 한 range를 만들고 for문 작성
+7. combi_speed 변수 만들고 nCr(n의 수, r의 값 입력)
+8. com_speed_list 변수 만들고 combi_speed를 comb_speed_list에 append
+9. combi_effi 변수 만들고 nCr(n의 수, r의 값 입력)
+10. com_effi_list 변수 만들고 combi_effi를 comb_effi_list에 append
+11. zip함수에 comb_speed_list, comb_effi_list 입력하고 for문으로 변수 2개 입력
+12. zip함수에 11.에서 입력한 변수 2개 입력하고 for문으로 변수 2개 입력
+13. 만약 12. for문 변수 중 하나가 True라면(변수 값 null 방지)
+14. 12 함수의 변수 2개 출력 speed 요소 변수 sum 출력, efficiency 요소 변수 min 출력
+15. sum하고 min 함수 곱한 값 출력
+"""
