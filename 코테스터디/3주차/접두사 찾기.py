@@ -36,7 +36,7 @@ plus
 첫째 줄에 M개의 문자열 중에 총 몇 개가 포함되어 있는 문자열 중 적어도 하나의 접두사인지 출력한다.
 
 7
-
+"""
 
 # from queue import PriorityQueue
 
@@ -86,7 +86,6 @@ plus
 #             word = word.replace(prefix, "")
 
 # print(result)
-"""
 
 import sys
 
