@@ -36,23 +36,73 @@ plus
 첫째 줄에 M개의 문자열 중에 총 몇 개가 포함되어 있는 문자열 중 적어도 하나의 접두사인지 출력한다.
 
 7
+
+
+# from queue import PriorityQueue
+
+# input_num = list(map(int, input().split()))
+# word_list = [input() for _ in range(input_num[0])] # ['baekjoononlinejudge', 'startlink', 'codeplus', 'sundaycoding', 'codingsh'] 확인
+# prefix_list = [input() for _ in range(input_num[1])] # ['baekjoon', 'star', 'start', 'code', 'sunday', 'coding', 'cod', 'online', 'judge', 'plus'] 확인
+# # 원하는 output que = ['baekjoon', 'online', 'star', 'code', 'sunday', 'cod', 'coding']
+# # que.qsize = 7
+
+
+# que = PriorityQueue()
+# result = []
+
+# for word in word_list:
+#     for prefix in prefix_list:
+#         if word in prefix:
+#             que.put(word)
+
+
+# print(que.qsize())
+
+# a = ['baekjoononlinejudge']
+# sample_list = ['baekjoon', 'star', 'start', 'code', 'sunday', 'coding', 'cod', 'online', 'judge', 'plus']
+# prefix_list = []
+
+# for i in sample_list:
+#     if a[0] == i:
+#         continue
+#     elif i in a[0]:
+#         a= a[0].split(i)
+#         prefix_list.append(i)
+#         a.remove("")
+#         print(a)
+
+# print(prefix_list)
+
+# word_list = ['baekjoononlinejudge', 'startlink', 'codeplus', 'sundaycoding', 'codingsh']
+# prefix_list = ['baekjoon', 'star', 'start', 'code', 'sunday', 'coding', 'cod', 'online', 'judge', 'plus']
+# result = []
+
+# for word in word_list:
+#     for prefix in prefix_list:
+#         if word == prefix:
+#             continue
+#         elif word.startswith(prefix):
+#             result.append(prefix)
+#             word = word.replace(prefix, "")
+
+# print(result)
 """
 
-from queue import PriorityQueue
+import sys
+
+input = sys.stdin.readline
 
 input_num = list(map(int, input().split()))
 word_list = [input() for _ in range(input_num[0])] # ['baekjoononlinejudge', 'startlink', 'codeplus', 'sundaycoding', 'codingsh'] 확인
 prefix_list = [input() for _ in range(input_num[1])] # ['baekjoon', 'star', 'start', 'code', 'sunday', 'coding', 'cod', 'online', 'judge', 'plus'] 확인
-# 원하는 output que = ['baekjoon', 'online', 'star', 'code', 'sunday', 'cod', 'coding']
-# que.qsize = 7
-
-que = PriorityQueue()
 result = []
 
 for word in word_list:
     for prefix in prefix_list:
-        if word in prefix:
-            que.put(word)
+        if word == prefix:
+            continue
+        elif word.startswith(prefix):
+            result.append(prefix)
+            word = word.replace(prefix, "")
 
-
-print(que.qsize())
+print(len(result))
