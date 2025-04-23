@@ -106,3 +106,15 @@ print(c & d - (a | b)) #{12}
 # a가 N이고 b가 N이고 c가 N이고 d가 Y이면 d - (a | b | c)
 # a가 Y이고 b가 N이고 c가 N이고 d가 Y이면 a - (d | b | c)
 # 모든 집합이 N이면 없음
+
+n, k, m, f = map(int, input().split())
+
+input_k = [set(map(int, input().split())) for _ in range(k)]
+assert len(input_k) == k, "입력된 카드 수가 일치하지 않습니다."
+input_f = [list(map(str, input())) for _ in range(f)]
+assert len(input_f) == f, "입력된 친구 수가 일치하지 않습니다."
+
+print(input_k)
+print(input_f)
+
+magic_card = [list(zip(input_k, v)) for v in input_f]
