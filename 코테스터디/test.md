@@ -13,7 +13,7 @@
     <tr>
       <td rowspan="3">4주차<br>(04.23~04.30)</td>
       <td>Algorithm</td>
-      <td><a href="https://www.acmicpc.net/problem/1253">백준#1806: 좋다(<br>출제자:최희범)</a></td>
+      <td><a href="https://www.acmicpc.net/problem/1253">백준#1806: 좋다<br>(출제자:최희범)</a></td>
       <td><a></a></td>
       <td><a></a></td>
       <td><a></a></td>
